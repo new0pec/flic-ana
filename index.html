@@ -10,8 +10,8 @@
   h1{font-size:1.6rem;margin:0 0 16px;} .container{max-width:1400px;margin:0 auto;}
   .toolbar{display:flex;gap:10px;margin-bottom:16px;align-items:center;}
   .search-wrap{position:relative;flex:1;display:flex;align-items:center;}
-  input[type=search]{background:var(--card);border:1px solid var(--border);color:var(--text);padding:14px 40px 14px 16px;border-radius:10px;width:100%;font-size:16px;text-transform:uppercase;}
-  #clearBtn{position:absolute;right:12px;background:none;border:none;color:#8b9bb4;font-size:20px;cursor:pointer;padding:0;line-height:1;}
+  input[type=search]{background:var(--card);border:1px solid var(--border);color:var(--text);padding:14px 48px 14px 16px;border-radius:10px;width:100%;font-size:16px;text-transform:uppercase;}
+  #clearBtn{position:absolute;right:8px;background:none;border:none;color:#8b9bb4;font-size:28px;cursor:pointer;padding:4px 8px;line-height:1;}
   #filterBtn{background:#374151;color:white;border:none;padding:14px 18px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;}
   #filterBtn.active{background:#ef4444;}
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#10b981;color:white;padding:12px 20px;border-radius:8px;font-weight:600;display:none;z-index:1000;}
@@ -23,7 +23,7 @@
   <h1>Chegadas</h1>
   <div class="toolbar">
     <div class="search-wrap">
-      <input type="search" id="search" placeholder="PROCURAR VOO, ORIGEM, MATRÍCULA...">
+      <input type="search" id="search">
       <button id="clearBtn" title="Limpar">×</button>
     </div>
     <button id="filterBtn">Filtrar</button>
@@ -44,7 +44,7 @@ async function loadFlights(){const tbody=document.getElementById('tbody');try{co
 function renderTable(list){const tbody=document.getElementById('tbody');if(!list||list.length===0){tbody.innerHTML='<tr><td colspan="10" class="no-results">Nenhum voo encontrado</td></tr>';return;}tbody.innerHTML=list.map((f,i)=>`<tr data-idx="${i}" class="${selected&&selected.fullFlight===f.fullFlight?'selected':''}"><td><strong>${f.fullFlight||''}</strong></td><td>${f.origin||''}</td><td>${f.registration||'—'}</td><td>${f.stand||''}</td><td>${f.sta||''}</td><td>${f.eta||''}</td><td>${f.ata||''}</td><td class="remarks ${f.remarks||''}">${f.remarks||''}</td><td>${f.link||''}</td><td>${f.std||''}</td></tr>`).join('');}
 function showToast(msg){const toast=document.getElementById('toast');toast.textContent=msg;toast.style.display='block';setTimeout(()=>toast.style.display='none',1500);}
 function selectFlight(f){selected=f;const text=`${f.fullFlight}|${f.registration||''}|${f.origin||''}`;navigator.clipboard.writeText(text).then(()=>showToast(`Copiado: ${text}`)).catch(()=>showToast('Erro ao copiar'));renderTable(getFiltered());}
-function getFiltered(){let list=allFlights;if(filterActive){list=list.filter(f=>!HIDDEN_STANDS.includes(String(f.stand||'').trim())&&!HIDDEN_ORIGINS.includes(String(f.origin||'').trim().toUpperCase()));}const searchEl=document.getElementById('search'),q=(searchEl?searchEl.value:'').toLowerCase().trim();if(!q)return list;return list.filter(f=>{const flight=(f.fullFlight||'').toLowerCase(),origin=(f.origin||'').toLowerCase(),reg=(f.registration||'').toLowerCase(),remarks=(f.remarks||'').toLowerCase();return flight.includes(q)||origin.includes(q)||reg.includes(q)||remarks.includes(q);});}
+function getFiltered(){let list=allFlights;if(filterActive){list=list.filter(f=>!HIDDEN_STANDS.includes(String(f.stand||'').trim())&&!HIDDEN_ORIGINS.includes(String(f.origin||'').trim().toUpperCase()));}const searchEl=document.getElementById('search'),q=(searchEl?searchEl.value:'').toUpperCase().trim();if(!q)return list;return list.filter(f=>{const flight=(f.fullFlight||'').toUpperCase(),origin=(f.origin||'').toUpperCase(),reg=(f.registration||'').toUpperCase(),remarks=(f.remarks||'').toUpperCase();const regLast3=reg.slice(-3);if(q.length===3&&regLast3===q)return true;return flight.includes(q)||origin.includes(q)||reg.includes(q)||remarks.includes(q);});}
 document.getElementById('tbody').addEventListener('click',e=>{const tr=e.target.closest('tr');if(!tr||!tr.dataset.idx)return;const idx=parseInt(tr.dataset.idx,10),list=getFiltered();if(list[idx])selectFlight(list[idx]);});
 const searchInput=document.getElementById('search');
 searchInput.addEventListener('input',()=>{searchInput.value=searchInput.value.toUpperCase();renderTable(getFiltered());});
