@@ -33,6 +33,7 @@
       <input type="search" id="search">
       <button id="clearBtn" title="Limpar">×</button>
     </div>
+    <button id="refreshBtn">Refresh</button>
     <div class="filter-box">
       <span>Filtrar</span>
       <label class="ios-switch">
@@ -40,12 +41,10 @@
         <span class="slider"></span>
       </label>
     </div>
-    <button id="refreshBtn">Refresh</button>
   </div>
   <div class="table-wrap">
     <table id="flightsTable"><thead><tr><th>Voo</th><th>Origem</th><th>Matrícula</th><th>Stand</th><th>STA</th><th>ETA</th><th>ATA</th><th>Estado</th><th>STD</th></tr></thead><tbody id="tbody"><tr><td colspan="9" class="loading">A carregar dados do FLIC...</td></tr></tbody></table>
   </div>
-  <footer>Dados obtidos em tempo real do FLIC TAP. Clica num voo para copiar e abrir ANA.</footer>
 </div>
 <div class="toast" id="toast">Copiado!</div>
 <script>
