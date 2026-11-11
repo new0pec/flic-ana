@@ -19,6 +19,7 @@
   .slider:before{position:absolute;content:"";height:27px;width:27px;left:2px;bottom:2px;background:white;transition:.3s;border-radius:50%;}
   input:checked + .slider{background:#34c759;}
   input:checked + .slider:before{transform:translateX(20px);}
+  #refreshBtn{background:#374151;color:white;border:none;padding:14px 18px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;}
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#10b981;color:white;padding:12px 20px;border-radius:8px;font-weight:600;display:none;z-index:1000;}
   .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);max-height:80vh;overflow-y:auto;} table{width:100%;border-collapse:collapse;font-size:0.85rem;} th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;} th{background:#1e293b;color:var(--muted);font-weight:600;position:sticky;top:0;z-index:1;} tr{cursor:pointer;} tr:hover{background:#1e293b;} tr.selected{background:#1e3a5f;} .remarks.ARRIVED{color:var(--arrived);} .remarks.CANCELED{color:var(--canceled);} footer{margin-top:20px;font-size:0.75rem;color:var(--muted);text-align:center;} .no-results,.loading{padding:20px;text-align:center;color:var(--muted);}
   .hl{background:#86efac;color:#0f1419;border-radius:3px;padding:0 2px;}
@@ -39,13 +40,7 @@
         <span class="slider"></span>
       </label>
     </div>
-    <div class="toggle-group">
-      <span>Refresh</span>
-      <label class="ios-switch">
-        <input type="checkbox" id="refreshToggle">
-        <span class="slider"></span>
-      </label>
-    </div>
+    <button id="refreshBtn">Refresh</button>
   </div>
   <div class="table-wrap">
     <table id="flightsTable"><thead><tr><th>Voo</th><th>Origem</th><th>Matrícula</th><th>Stand</th><th>STA</th><th>ETA</th><th>ATA</th><th>Estado</th><th>STD</th></tr></thead><tbody id="tbody"><tr><td colspan="9" class="loading">A carregar dados do FLIC...</td></tr></tbody></table>
@@ -71,7 +66,7 @@ const searchInput=document.getElementById('search');
 searchInput.addEventListener('input',()=>{searchInput.value=searchInput.value.toUpperCase();renderTable(getFiltered());});
 document.getElementById('clearBtn').addEventListener('click',()=>{searchInput.value='';renderTable(getFiltered());searchInput.focus();});
 document.getElementById('filterToggle').addEventListener('change',e=>{filterActive=e.target.checked;renderTable(getFiltered());});
-document.getElementById('refreshToggle').addEventListener('change',e=>{if(e.target.checked){loadFlights();setTimeout(()=>{e.target.checked=false;},800);}});
+document.getElementById('refreshBtn').addEventListener('click',()=>{loadFlights();});
 loadFlights();
 </script>
 </body>
