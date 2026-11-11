@@ -8,13 +8,17 @@
   :root { --bg:#0f1419; --card:#1a2332; --border:#2d3a4d; --text:#e8eef6; --muted:#8b9bb4; --accent:#3b82f6; --arrived:#22c55e; --canceled:#ef4444; }
   *{box-sizing:border-box;} body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:16px;line-height:1.4;}
   h1{font-size:1.6rem;margin:0 0 16px;} .container{max-width:1400px;margin:0 auto;}
-  .toolbar{display:flex;gap:10px;margin-bottom:16px;align-items:flex-start;}
-  .search-wrap{position:relative;flex:1;display:flex;align-items:center;}
+  .toolbar{display:flex;gap:12px;margin-bottom:16px;align-items:center;flex-wrap:wrap;}
+  .search-wrap{position:relative;flex:1;min-width:200px;display:flex;align-items:center;}
   input[type=search]{background:var(--card);border:1px solid var(--border);color:var(--text);padding:14px 48px 14px 16px;border-radius:10px;width:100%;font-size:16px;text-transform:uppercase;}
   #clearBtn{position:absolute;right:8px;background:none;border:none;color:#8b9bb4;font-size:28px;cursor:pointer;padding:4px 8px;line-height:1;}
-  .btn-col{display:flex;flex-direction:column;gap:8px;}
-  #refreshBtn,#filterBtn{background:#374151;color:white;border:none;padding:14px 18px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;}
-  #filterBtn.active{background:#ef4444;}
+  .toggle-group{display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--muted);}
+  .ios-switch{position:relative;display:inline-block;width:51px;height:31px;}
+  .ios-switch input{opacity:0;width:0;height:0;}
+  .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#39393d;transition:.3s;border-radius:31px;}
+  .slider:before{position:absolute;content:"";height:27px;width:27px;left:2px;bottom:2px;background:white;transition:.3s;border-radius:50%;}
+  input:checked + .slider{background:#34c759;}
+  input:checked + .slider:before{transform:translateX(20px);}
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#10b981;color:white;padding:12px 20px;border-radius:8px;font-weight:600;display:none;z-index:1000;}
   .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);max-height:80vh;overflow-y:auto;} table{width:100%;border-collapse:collapse;font-size:0.85rem;} th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;} th{background:#1e293b;color:var(--muted);font-weight:600;position:sticky;top:0;z-index:1;} tr{cursor:pointer;} tr:hover{background:#1e293b;} tr.selected{background:#1e3a5f;} .remarks.ARRIVED{color:var(--arrived);} .remarks.CANCELED{color:var(--canceled);} footer{margin-top:20px;font-size:0.75rem;color:var(--muted);text-align:center;} .no-results,.loading{padding:20px;text-align:center;color:var(--muted);}
   .hl{background:#86efac;color:#0f1419;border-radius:3px;padding:0 2px;}
@@ -28,9 +32,19 @@
       <input type="search" id="search">
       <button id="clearBtn" title="Limpar">×</button>
     </div>
-    <div class="btn-col">
-      <button id="refreshBtn">Refresh</button>
-      <button id="filterBtn">Filtrar</button>
+    <div class="toggle-group">
+      <span>Filtrar</span>
+      <label class="ios-switch">
+        <input type="checkbox" id="filterToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle-group">
+      <span>Refresh</span>
+      <label class="ios-switch">
+        <input type="checkbox" id="refreshToggle">
+        <span class="slider"></span>
+      </label>
     </div>
   </div>
   <div class="table-wrap">
@@ -56,8 +70,8 @@ document.getElementById('tbody').addEventListener('click',e=>{const tr=e.target.
 const searchInput=document.getElementById('search');
 searchInput.addEventListener('input',()=>{searchInput.value=searchInput.value.toUpperCase();renderTable(getFiltered());});
 document.getElementById('clearBtn').addEventListener('click',()=>{searchInput.value='';renderTable(getFiltered());searchInput.focus();});
-document.getElementById('refreshBtn').addEventListener('click',()=>{loadFlights();});
-document.getElementById('filterBtn').addEventListener('click',()=>{filterActive=!filterActive;const btn=document.getElementById('filterBtn');btn.classList.toggle('active',filterActive);btn.textContent=filterActive?'Mostrar todos':'Filtrar';renderTable(getFiltered());});
+document.getElementById('filterToggle').addEventListener('change',e=>{filterActive=e.target.checked;renderTable(getFiltered());});
+document.getElementById('refreshToggle').addEventListener('change',e=>{if(e.target.checked){loadFlights();setTimeout(()=>{e.target.checked=false;},800);}});
 loadFlights();
 </script>
 </body>
