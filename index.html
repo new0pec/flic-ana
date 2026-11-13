@@ -6,7 +6,7 @@
 <title>Chegadas</title>
 <style>
   :root { --bg:#0f1419; --card:#1a2332; --border:#2d3a4d; --text:#e8eef6; --muted:#8b9bb4; --accent:#3b82f6; --arrived:#22c55e; --canceled:#ef4444; }
-  *{box-sizing:border-box;} body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:16px;line-height:1.4;}
+  *{box-sizing:border-box;} body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:16px;line-height:1.4;padding-bottom:80px;}
   h1{font-size:1.6rem;margin:0 0 16px;} .container{max-width:1400px;margin:0 auto;}
   .toolbar{display:flex;gap:12px;margin-bottom:16px;align-items:flex-end;flex-wrap:wrap;}
   .search-wrap{position:relative;flex:1;min-width:200px;display:flex;align-items:center;}
@@ -20,11 +20,13 @@
   input:checked + .slider{background:#34c759;}
   input:checked + .slider:before{transform:translateX(20px);}
   #refreshBtn{background:#374151;color:white;border:none;padding:14px 18px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;align-self:flex-end;}
-  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#10b981;color:white;padding:12px 20px;border-radius:8px;font-weight:600;display:none;z-index:1000;}
+  .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#10b981;color:white;padding:12px 20px;border-radius:8px;font-weight:600;display:none;z-index:1000;}
   .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);max-height:80vh;overflow-y:auto;} table{width:100%;border-collapse:collapse;font-size:0.85rem;} th,td{padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap;} th{background:#1e293b;color:var(--muted);font-weight:600;position:sticky;top:0;z-index:1;} tr{cursor:pointer;} tr:hover{background:#1e293b;} tr.selected{background:#1e3a5f;} .remarks.ARRIVED{color:var(--arrived);} .remarks.CANCELED{color:var(--canceled);} footer{margin-top:20px;font-size:0.75rem;color:var(--muted);text-align:center;} .no-results,.loading{padding:20px;text-align:center;color:var(--muted);}
   .hl{background:#86efac;color:#0f1419;border-radius:3px;padding:0 2px;}
   .stand-red{background:#ef4444;color:white;font-weight:600;border-radius:4px;padding:2px 6px;}
   .stand-green{background:#22c55e;color:white;font-weight:600;border-radius:4px;padding:2px 6px;}
+  #closeBtn{position:fixed;bottom:0;left:0;right:0;background:#ef4444;color:white;border:none;padding:18px;font-size:18px;font-weight:700;cursor:pointer;width:100%;z-index:999;}
+  #closeBtn:active{background:#dc2626;}
 </style>
 </head>
 <body>
@@ -49,6 +51,7 @@
   </div>
 </div>
 <div class="toast" id="toast">Copiado!</div>
+<button id="closeBtn">Fechar</button>
 <script>
 const PROXY='https://proxy.cors.dev/';
 const FLIC_URL='https://flic.tap.pt/FLIC_UI/FLIC.aspx?id=CPOR-LISC1-12h_ARR';
@@ -69,6 +72,7 @@ searchInput.addEventListener('input',()=>{searchInput.value=searchInput.value.to
 document.getElementById('clearBtn').addEventListener('click',()=>{searchInput.value='';renderTable(getFiltered());searchInput.focus();});
 document.getElementById('filterToggle').addEventListener('change',e=>{filterActive=e.target.checked;renderTable(getFiltered());});
 document.getElementById('refreshBtn').addEventListener('click',()=>{loadFlights();});
+document.getElementById('closeBtn').addEventListener('click',()=>{window.close();if(!window.closed){alert('Fecha o separador manualmente');}});
 loadFlights();
 </script>
 </body>
