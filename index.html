@@ -94,7 +94,16 @@ searchInput.addEventListener('input',()=>{searchInput.value=searchInput.value.to
 document.getElementById('clearBtn').addEventListener('click',()=>{searchInput.value='';renderTable(getFiltered());searchInput.focus();});
 document.getElementById('filterToggle').addEventListener('change',e=>{filterActive=e.target.checked;renderTable(getFiltered());});
 document.getElementById('refreshBtn').addEventListener('click',()=>{loadFlights();});
-document.getElementById('closeBtn').addEventListener('click',()=>{window.close();if(!window.closed){alert('Fecha o separador manualmente');}});
+document.getElementById('closeBtn').addEventListener('click',()=>{
+  try { window.close(); } catch(e) {}
+  setTimeout(() => {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = 'about:blank';
+    }
+  }, 100);
+});
 loadFlights();
 </script>
 </body>
