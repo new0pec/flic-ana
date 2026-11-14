@@ -27,11 +27,11 @@
   .hl{background:#86efac;color:#0f1419;border-radius:3px;padding:0 2px;}
   .stand-red{background:#ef4444;color:white;font-weight:600;border-radius:4px;padding:2px 6px;}
   .stand-green{background:#22c55e;color:white;font-weight:600;border-radius:4px;padding:2px 6px;}
-  #closeBtn{
+  #searchBtn{
     display:block;
     width:100%;
     margin-top:12px;
-    background:linear-gradient(to bottom, #f87171, #ef4444);
+    background:linear-gradient(to bottom, #60a5fa, #3b82f6);
     color:white;
     border:none;
     padding:18px;
@@ -39,14 +39,14 @@
     font-weight:700;
     cursor:pointer;
     border-radius:12px;
-    box-shadow:0 4px 0 #b91c1c, 0 6px 12px rgba(0,0,0,0.4);
+    box-shadow:0 4px 0 #1d4ed8, 0 6px 12px rgba(0,0,0,0.4);
     text-shadow:0 1px 2px rgba(0,0,0,0.3);
     transition:all 0.1s;
     flex-shrink:0;
   }
-  #closeBtn:active{
-    background:linear-gradient(to bottom, #ef4444, #dc2626);
-    box-shadow:0 1px 0 #b91c1c, 0 2px 6px rgba(0,0,0,0.3);
+  #searchBtn:active{
+    background:linear-gradient(to bottom, #3b82f6, #2563eb);
+    box-shadow:0 1px 0 #1d4ed8, 0 2px 6px rgba(0,0,0,0.3);
     transform:translateY(3px);
   }
 </style>
@@ -56,7 +56,7 @@
   <h1>Chegadas</h1>
   <div class="toolbar">
     <div class="search-wrap">
-      <input type="search" id="search" placeholder="Pesquisar e premir Enter">
+      <input type="search" id="search">
       <button id="clearBtn" title="Limpar">×</button>
     </div>
     <button id="refreshBtn">Refresh</button>
@@ -71,7 +71,7 @@
   <div class="table-wrap">
     <table id="flightsTable"><thead><tr><th>Voo</th><th>Origem</th><th>Matrícula</th><th>Stand</th><th>ATA</th><th>Estado</th></tr></thead><tbody id="tbody"><tr><td colspan="6" class="loading">A carregar dados do FLIC...</td></tr></tbody></table>
   </div>
-  <button id="closeBtn">Fechar</button>
+  <button id="searchBtn">Pesquisar</button>
 </div>
 <div class="toast" id="toast">Copiado!</div>
 <script>
@@ -116,29 +116,23 @@ function renderTable(list){
 function showToast(msg){const toast=document.getElementById('toast');toast.textContent=msg;toast.style.display='block';setTimeout(()=>toast.style.display='none',1500);}
 function selectFlight(f){selected=f;const text=`${f.fullFlight}|${f.registration||''}|${f.origin||''}`;navigator.clipboard.writeText(text).then(()=>{showToast(`Copiado: ${text}`);window.open(ANA_URL,'_blank');}).catch(()=>{showToast('Erro ao copiar');window.open(ANA_URL,'_blank');});renderTable(getFiltered());}
 function getFiltered(){let list=allFlights;if(filterActive){list=list.filter(f=>!HIDDEN_STANDS.includes(String(f.stand||'').trim())&&!HIDDEN_ORIGINS.includes(String(f.origin||'').trim().toUpperCase()));}const searchEl=document.getElementById('search'),q=(searchEl?searchEl.value:'').toUpperCase().trim();if(!q)return list;return list.filter(f=>{const flight=(f.fullFlight||'').toUpperCase(),origin=(f.origin||'').toUpperCase(),reg=(f.registration||'').toUpperCase(),remarks=(f.remarks||'').toUpperCase();const regLast3=reg.slice(-3);if(q.length===3&&regLast3===q)return true;return flight.includes(q)||origin.includes(q)||reg.includes(q)||remarks.includes(q);});}
+function doSearch(){
+  renderTable(getFiltered());
+  document.getElementById('search').blur();
+}
 document.getElementById('tbody').addEventListener('click',e=>{const tr=e.target.closest('tr');if(!tr||!tr.dataset.idx)return;const idx=parseInt(tr.dataset.idx,10),list=getFiltered();if(list[idx])selectFlight(list[idx]);});
 const searchInput=document.getElementById('search');
 searchInput.addEventListener('input',()=>{searchInput.value=searchInput.value.toUpperCase();});
 searchInput.addEventListener('keydown',e=>{
   if(e.key==='Enter'){
     e.preventDefault();
-    renderTable(getFiltered());
-    searchInput.blur();
+    doSearch();
   }
 });
 document.getElementById('clearBtn').addEventListener('click',()=>{searchInput.value='';renderTable(getFiltered());searchInput.focus();});
 document.getElementById('filterToggle').addEventListener('change',e=>{filterActive=e.target.checked;renderTable(getFiltered());});
 document.getElementById('refreshBtn').addEventListener('click',()=>{loadFlights();});
-document.getElementById('closeBtn').addEventListener('click',()=>{
-  try { window.close(); } catch(e) {}
-  setTimeout(() => {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      window.location.href = 'about:blank';
-    }
-  }, 100);
-});
+document.getElementById('searchBtn').addEventListener('click',doSearch);
 loadFlights();
 </script>
 </body>
