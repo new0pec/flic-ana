@@ -62,7 +62,7 @@
     <div class="filter-box">
       <span>Filtrar</span>
       <label class="ios-switch">
-        <input type="checkbox" id="filterToggle">
+        <input type="checkbox" id="filterToggle" checked>
         <span class="slider"></span>
       </label>
     </div>
@@ -80,7 +80,7 @@ const ANA_URL='https://busdriverlis.ana.pt/pt/bus-driver/search';
 const HIDDEN_STANDS=['141','142','143','144','145','146','147','114','115','116','117','122','123','124','125','126'];
 const GREEN_STANDS=['200','201','202','203','204','205','206','207','208','209'];
 const HIDDEN_ORIGINS=['YYZ','BOS','IAD','MIA','EWR','DSS','LAX','GIG','REC','SSA','GRU','NBJ','VCP','JFK','LHR','NAT','DUB','DXB'];
-let allFlights=[],selected=null,filterActive=false,searchTimeout=null;
+let allFlights=[],selected=null,filterActive=true,searchTimeout=null;
 async function loadFlights(){const tbody=document.getElementById('tbody');tbody.innerHTML='<tr><td colspan="6" class="loading">A atualizar dados do FLIC...</td></tr>';try{const response=await fetch(PROXY+FLIC_URL);if(!response.ok)throw new Error('HTTP '+response.status);const html=await response.text();const dateMatch=html.match(/(\d{2})(\w{3})(\d{2})\s+(\d{2}):(\d{2})/);let pageDate=new Date();if(dateMatch){const months={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};const day=parseInt(dateMatch[1]),mon=months[dateMatch[2]]||10,year=2000+parseInt(dateMatch[3]);pageDate=new Date(year,mon,day);}const parser=new DOMParser(),doc=parser.parseFromString(html,'text/html'),rows=Array.from(doc.querySelectorAll('tr')),flights=[];for(const tr of rows){const cells=Array.from(tr.querySelectorAll('td')).map(td=>td.innerText.trim());if(cells.length>=4&&cells[0]&&cells[1]&&/^[A-Z0-9]{2,3}$/.test(cells[0])&&/^\d+$/.test(cells[1])){const sta=cells[6]||'',eta=cells[7]||'',ata=cells[8]||'';const timeStr=ata||eta||sta;let flightTime=null;if(timeStr&&/^\d{2}:\d{2}$/.test(timeStr)){const [h,m]=timeStr.split(':').map(Number);flightTime=new Date(pageDate);flightTime.setHours(h,m,0,0);const now=new Date();if(flightTime.getTime()>now.getTime()+12*60*60*1000){flightTime.setDate(flightTime.getDate()-1);}}flights.push({airline:cells[0],number:cells[1],origin:cells[2]||'',registration:cells[3]||'',eqt:cells[4]||'',stand:cells[5]||'',sta,eta,ata,remarks:cells[9]||'',link:cells[10]||'',std:cells[11]||'',fullFlight:cells[0]+cells[1],flightTime});}}const now=new Date(),cutoff=new Date(now.getTime()-3*60*60*1000);allFlights=flights.filter(f=>!f.flightTime||f.flightTime>=cutoff);renderTable(getFiltered());}catch(err){tbody.innerHTML=`<tr><td colspan="6" class="no-results">Erro ao carregar dados do FLIC: ${err.message}</td></tr>`;}}
 function renderTable(list){
   const tbody=document.getElementById('tbody');
