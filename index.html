@@ -85,7 +85,21 @@ function renderTable(list){
   }
 }
 function showToast(msg){const toast=document.getElementById('toast');toast.textContent=msg;toast.style.display='block';setTimeout(()=>toast.style.display='none',1500);}
-function selectFlight(f){selected=f;const text=`${f.fullFlight}|${f.registration||''}|${f.origin||''}`;navigator.clipboard.writeText(text).then(()=>{showToast(`Copiado: ${text}`);window.open(ANA_URL,'_blank');}).catch(()=>{showToast('Erro ao copiar');window.open(ANA_URL,'_blank');});renderTable(getFiltered());}
+function selectFlight(f){
+  selected=f;
+  const text=`${f.fullFlight}|${f.registration||''}|${f.origin||''}`;
+  navigator.clipboard.writeText(text).then(()=>{
+    showToast(`Copiado: ${text}`);
+  }).catch(()=>{
+    showToast('Erro ao copiar');
+  });
+  setTimeout(()=>{
+    window.open(ANA_URL,'_blank');
+  }, 100);
+  setTimeout(()=>{
+    renderTable(getFiltered());
+  }, 300);
+}
 function getFiltered(){
   let list=allFlights;
   if(filterActive){
