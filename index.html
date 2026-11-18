@@ -79,7 +79,7 @@
   #clearBtn{position:absolute;right:4px;width:40px;height:40px;background:none;border:none;color:var(--ink-2);font-size:26px;line-height:1;cursor:pointer;border-radius:10px;}
   #refreshBtn{font:inherit;font-size:1.05rem;font-weight:600;color:var(--ink);padding:0 16px;border-radius:var(--r-md);cursor:pointer;white-space:nowrap;}
   #refreshBtn[aria-busy=true]{color:var(--ink-2);}
-  .filter-box{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0 10px;border-radius:var(--r-md);font-size:.85rem;color:var(--ink-2);cursor:pointer;}
+  .filter-box{display:flex;align-items:center;justify-content:center;padding:0 12px;border-radius:var(--r-md);cursor:pointer;}
   .ios-switch{position:relative;display:inline-block;width:46px;height:28px;}
   .ios-switch input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer;}
   .slider{position:absolute;inset:0;background:var(--switch-off);transition:background .2s;border-radius:28px;pointer-events:none;}
@@ -124,7 +124,6 @@
     </div>
     <button id="refreshBtn" class="glass">Atualizar</button>
     <label class="filter-box glass">
-      <span>Filtrar</span>
       <span class="ios-switch">
         <input type="checkbox" id="filterToggle" checked aria-label="Filtrar stands e origens">
         <span class="slider"></span>
